@@ -1,6 +1,7 @@
 ![Kotlin](https://img.shields.io/badge/kotlin-%23ED8B00.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gabadev/)
+[![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=Collection%20AppForum&uri=https%3A%2F%2Fgithub.com%2Fdevmorfeu%2Fappforum%2Fblob%2Fmaster%2Fferramentas%2Fappforum_collection)
 
 <p align="center">
   <i>
