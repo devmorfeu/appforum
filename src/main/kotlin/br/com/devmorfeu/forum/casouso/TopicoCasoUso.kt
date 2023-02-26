@@ -2,26 +2,29 @@ package br.com.devmorfeu.forum.casouso
 
 import br.com.devmorfeu.forum.controladores.dto.entrada.AtualizacaoTopicoDE
 import br.com.devmorfeu.forum.controladores.dto.entrada.TopicoDE
+import br.com.devmorfeu.forum.controladores.dto.saida.TopicoCategoriaDS
 import br.com.devmorfeu.forum.controladores.dto.saida.TopicoDS
 import br.com.devmorfeu.forum.excessoes.IdNaoEncontradoExcessao
-import br.com.devmorfeu.forum.modelos.StatusTopico
 import br.com.devmorfeu.forum.modelos.StatusTopico.NAO_RESPONDIDO
 import br.com.devmorfeu.forum.modelos.Topico
+import br.com.devmorfeu.forum.repositorio.TopicoRepositorio
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
-import java.time.LocalDateTime.*
-import java.util.stream.Collectors.*
+import java.time.LocalDateTime.now
 
 @Service
 class TopicoCasoUso(
-    private var topicos: List<Topico> = ArrayList(),
+    private val repositorio: TopicoRepositorio,
     private val cursoCasoUso: CursoCasoUso,
     private val usuarioCasoUso: UsuarioCasoUso
 ) {
 
-    fun listar(): List<TopicoDS> {
+    fun listar(nomeCurso: String?, paginacao: Pageable): Page<TopicoDS> {
 
-        return topicos.stream().map { topico ->
+        val topicos = if (nomeCurso == null) repositorio.findAll(paginacao) else repositorio.findByCursoNome(nomeCurso, paginacao);
+
+        return topicos.map { topico ->
             TopicoDS(
                 id = topico.id!!,
                 titulo = topico.titulo,
@@ -29,12 +32,12 @@ class TopicoCasoUso(
                 dataCriacao = topico.dataCriacao,
                 status = topico.status
             )
-        }.collect(toList())
+        }
     }
 
     fun buscarPorId(id: Long): TopicoDS {
 
-        val topico = topicos.stream()
+        val topico = repositorio.findById(id).stream()
             .filter { topico -> topico.id == id }
             .findFirst()
             .orElseThrow { IdNaoEncontradoExcessao("Topico nao encontrado") }
@@ -49,9 +52,8 @@ class TopicoCasoUso(
     }
 
     fun cadastrar(topicoDE: TopicoDE): TopicoDS {
-        topicos = topicos.plus(
+        repositorio.save(
             Topico(
-                id = topicos.size.toLong() + 1,
                 titulo = topicoDE.titulo,
                 mensagem = topicoDE.mensagem,
                 curso = cursoCasoUso.buscarCursoPorId(topicoDE.idCurso),
@@ -62,39 +64,26 @@ class TopicoCasoUso(
         return TopicoDS(id = 0, titulo = "", mensagem = "", status = NAO_RESPONDIDO, dataCriacao = now())
     }
 
-    fun buscarPorIdBase(id: Long): Topico {
+    fun atualizar(atualizacaoTopicoDE: AtualizacaoTopicoDE) {
 
-        return topicos.stream()
-            .filter { topico -> topico.id == id }
+        val topico = repositorio.findById(atualizacaoTopicoDE.id).stream()
+            .filter { topico ->
+                topico.id == atualizacaoTopicoDE.id
+            }
             .findFirst()
             .orElseThrow { IdNaoEncontradoExcessao("Topico nao encontrado") }
-    }
 
-    fun atualizar(atualizacaoTopicoDE: AtualizacaoTopicoDE) {
-        val topico = topicos.stream().filter { topico ->
-            topico.id == atualizacaoTopicoDE.id
-        }.findFirst().get()
+        topico.titulo = atualizacaoTopicoDE.titulo
+        topico.mensagem = atualizacaoTopicoDE.mensagem
 
-        topicos.minus(topico).plus(
-            Topico(
-                id = atualizacaoTopicoDE.id,
-                titulo = atualizacaoTopicoDE.titulo,
-                mensagem = atualizacaoTopicoDE.mensagem,
-                autor = topico.autor,
-                curso = topico.curso,
-                respostas = topico.respostas,
-                status = topico.status,
-                dataCriacao = topico.dataCriacao
-            )
-        )
+        repositorio.save(topico)
     }
 
     fun deletar(id: Long) {
-        val topico = topicos.stream().filter { topico ->
-            topico.id == id
-        }.findFirst()
-            .orElseThrow { IdNaoEncontradoExcessao("Topico nao encontrado") }
+        repositorio.deleteById(id)
+    }
 
-        topicos.minus(topico)
+    fun buscarRelatorio(): List<TopicoCategoriaDS> {
+        return repositorio.buscarRelatorio()
     }
 }

@@ -1,26 +1,12 @@
 package br.com.devmorfeu.forum.casouso
 
 import br.com.devmorfeu.forum.modelos.Usuario
+import br.com.devmorfeu.forum.repositorio.UsuarioRepositorio
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
-class UsuarioCasoUso(var usuarios: List<Usuario>) {
-
-    init {
-        val usuario = Usuario(
-                id = 1,
-                nome = "Rainha elizabeth",
-                "morreu@morreu"
-        )
-
-        usuarios = Arrays.asList(usuario)
-    }
-
+class UsuarioCasoUso(private val repositorio: UsuarioRepositorio) {
     fun buscarUsuarioPorId(idAutor: Long): Usuario {
-        return usuarios.stream()
-                .filter { usuario -> usuario.id == idAutor }
-                .findFirst()
-                .get()
+        return repositorio.getReferenceById(idAutor)
     }
 }
