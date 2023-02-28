@@ -1,12 +1,12 @@
 package br.com.devmorfeu.forum.excessoes
 
-import jakarta.servlet.http.HttpServletRequest
+import br.com.devmorfeu.forum.excessoes.modelos.ErroDS
 import org.springframework.http.HttpStatus.*
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import java.lang.Exception
+import javax.servlet.http.HttpServletRequest
 
 
 @RestControllerAdvice

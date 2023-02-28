@@ -8,6 +8,4 @@ import org.springframework.cache.annotation.EnableCaching
 @SpringBootApplication
 class ForumApplication
 
-fun main(args: Array<String>) {
-	runApplication<ForumApplication>(*args)
-}
+fun main(args: Array<String>) { runApplication<ForumApplication>(*args) }

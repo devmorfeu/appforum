@@ -1,0 +1,1 @@
+update usuario set password = '$2a$12$LqezgDp6JrgxpHuN4bWiGOo.M.YiyQLAx4U1f8VjzDV.K8BpxJClG' where id = 1;
